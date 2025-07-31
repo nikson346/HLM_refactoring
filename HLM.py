@@ -32,8 +32,8 @@ def add_args(parser):
                         help='path to the particle.star meta files' )
     parser.add_argument('--o', action='store', required=True,
                         help='folder to save the particle file' )
-    parser.add_argument('--datatype', action='store', required=False, default=0,
-                        help='0 is relion 3.1, 1 is relion 3, 2 is cryosparc' )
+    parser.add_argument('--datatype', action='store', required=False, default=0, type=int,
+                        help='0 is relion 3.1, 1 is relion 3, 2 is cryosparc, 3 is relion 5.0' )
     parser.add_argument('--model', action='store', required=False, default='word2vec',
                         help='model to calculate the 2D class embedding, using word2vec or bert' )
     parser.add_argument('-v','--verbose',action='store_true',help='Increaes verbosity')
@@ -43,29 +43,29 @@ def add_args(parser):
     parser.add_argument('--display', action='store_true', help='display the result')
 
     group = parser.add_argument_group('word2vec model parameter and filament averaging')
-    group.add_argument('--window', action='store', required=False, default=1,
+    group.add_argument('--window', action='store', required=False, default=1, type=int,
                        help='the window size to consider the neighboring segments')
-    group.add_argument('--negative', action='store', required=False, default=4,
+    group.add_argument('--negative', action='store', required=False, default=4, type=int,
                        help = 'number of the negative sample')
-    group.add_argument('--emb_size', action='store', required=False, default=100,
+    group.add_argument('--emb_size', action='store', required=False, default=100, type=int,
                        help = 'the size of word embedding')
-    group.add_argument('--batch', action='store', required=False, default=1000,
+    group.add_argument('--batch', action='store', required=False, default=1000, type=int,
                        help = 'the batch size')
-    group.add_argument('--min_gain', action='store', required=False, default=1,
+    group.add_argument('--min_gain', action='store', required=False, default=1, type=int,
                        help = 'min gain of the loss')
     group.add_argument('--loss', action='store', required=False, default='cross_entropy',
                        help = 'loss function')
     group.add_argument('--optim', action='store', required=False, default='adam',
                        help = 'loss function')
-    group.add_argument('--avg_method', action='store', required=False, default=0,
+    group.add_argument('--avg_method', action='store', required=False, default=0, type=int,
                        help = 'the method to do filament average, 0 means simple average, 1 means weight average')
 
     group = parser.add_argument_group('dimension reduction and cluster diameter')
-    group.add_argument('--n_neighbors', action='store', required=False, default=15,
+    group.add_argument('--n_neighbors', action='store', required=False, default=15, type=int,
                        help = 'n_neighboers for the umap')
-    group.add_argument('--min_dist', action='store', required=False, default=0.1,
+    group.add_argument('--min_dist', action='store', required=False, default=0.1, type=float,
                        help = 'min_dis in umap')
-    group.add_argument('--pca_dim', action='store', required=False, default=3,
+    group.add_argument('--pca_dim', action='store', required=False, default=3, type=int,
                        help = 'PCA dimension')
 
 

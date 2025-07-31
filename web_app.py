@@ -149,6 +149,11 @@ def pt(dataframe, filament_cluster_number,umap_predict, optics, separate, output
                 output=EMdata.output_star(output_path+'/'+file_name,i,data_cluster,metadata)
                 output.writemetadata()
                 output.writecluster()
+            elif datatype==3:
+                # RELION 5.0 - handle like 3.1 with optics groups
+                output=EMdata.output_star(output_path+'/'+file_name,i,data_cluster,metadata)
+                output.opticgroup(optics)
+                output.writecluster()
     print(separate)
     return 0
 
@@ -171,9 +176,32 @@ def getdata(meta_path,datatype=0,N2D=False):
             corpus_information=EMdata.process_helical(dataset).extarct_helical(label)
         else:
             corpus_information=EMdata.process_helical(dataset).extarct_helical_select()
-    
-    dataframe=pd.DataFrame(data=data,columns=metadata)
-    dataframe['_rlnImageName_noseq'] = [x[7:] for x in dataframe['_rlnImageName']]
+        
+        dataframe=pd.DataFrame(data=data,columns=metadata)
+        dataframe['_rlnImageName_noseq'] = [x[7:] for x in dataframe['_rlnImageName']]
+    elif datatype==3:
+        # read relion 5.0 using modern parser
+        file_info = EMdata.read_data_df(meta_path)
+        dataframe = file_info.star2dataframe()
+        print("RELION 5.0 metadata columns:", list(dataframe.columns))
+        
+        # Extract optics information if available
+        optics = None  # Will be extracted from dataframe if present
+        
+        if N2D:
+            # For now, skip N2D processing for RELION 5.0 - can be added later
+            raise NotImplementedError("N2D processing not yet implemented for RELION 5.0")
+        else:
+            corpus_information = EMdata.process_helical_df(dataframe).extract_helical_select()
+        
+        # Create compatible format for web app
+        if '_rlnImageName' in dataframe.columns:
+            dataframe['_rlnImageName_noseq'] = [x[7:] if len(x) > 7 else x for x in dataframe['_rlnImageName']]
+        else:
+            # Handle case where ImageName format might be different in RELION 5.0
+            dataframe['_rlnImageName_noseq'] = dataframe.get('filename', dataframe.index)
+    else:
+        raise ValueError(f"Unsupported datatype: {datatype}. Supported values are 0, 1, 3 for getdata function.")
     corpus_dic,helix_name=corpus_information
 
     positive_label = []

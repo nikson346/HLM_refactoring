@@ -73,21 +73,22 @@ def get_batches(context_tuple_list, word_to_index, device, batch_size=100):
 
 class Word2Vec(nn.Module):
 
-    def __init__(self, embedding_size, vocab_size):
+    def __init__(self, embedding_size, vocab_size, device):
         super(Word2Vec, self).__init__()
-        self.target = nn.Embedding(vocab_size, embedding_size).cuda()
-        self.context = nn.Embedding(vocab_size, embedding_size).cuda()
+        self.device = device
+        self.target = nn.Embedding(vocab_size, embedding_size).to(device)
+        self.context = nn.Embedding(vocab_size, embedding_size).to(device)
 
     def forward(self, target_word, context_word, negative_example):
         emb_target = self.target(target_word)
         emb_context = self.context(context_word)
-        emb_product = torch.mul(emb_target, emb_context).cuda()
-        emb_product = torch.sum(emb_product, dim=1).cuda()
-        out = torch.sum(F.logsigmoid(emb_product)).cuda()
+        emb_product = torch.mul(emb_target, emb_context).to(self.device)
+        emb_product = torch.sum(emb_product, dim=1).to(self.device)
+        out = torch.sum(F.logsigmoid(emb_product)).to(self.device)
         emb_negative = self.context(negative_example)
-        emb_product = torch.bmm(emb_negative, emb_target.unsqueeze(2)).cuda()
-        emb_product = torch.sum(emb_product, dim=1).cuda()
-        out += torch.sum(F.logsigmoid(-emb_product)).cuda()
+        emb_product = torch.bmm(emb_negative, emb_target.unsqueeze(2)).to(self.device)
+        emb_product = torch.sum(emb_product, dim=1).to(self.device)
+        out += torch.sum(F.logsigmoid(-emb_product)).to(self.device)
         return -out
 
 class EarlyStopping():
@@ -143,7 +144,7 @@ def run_model(corpus_ignore , device, embedding_size=100, w = 2):
     print("There are {} pairs of target and context words".format(len(context_tuple_list)))
 
 
-    net = Word2Vec(embedding_size=embedding_size, vocab_size=vocabulary_size)
+    net = Word2Vec(embedding_size=embedding_size, vocab_size=vocabulary_size, device=device)
     optimizer = optim.Adam(net.parameters())
     early_stopping = EarlyStopping(patience=5, min_percent_gain=1)
     n=0

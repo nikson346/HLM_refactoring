@@ -5,7 +5,7 @@ import EMdata
 
 #data path
 file_path='F:/script/class2vec/real_star_file/10340_case3_800_sampling2_select.star'
-datatype=0 #0 is relion 3.1, 1 is relion 3, 2 is cryosparc
+datatype=0 #0 is relion 3.1, 1 is relion 3, 2 is cryosparc, 3 is relion 5.0
 
 file_name=os.path.basename(file_path)
 output_path=os.path.dirname(file_path)+'/'+os.path.splitext(file_name)[0]
@@ -26,10 +26,19 @@ if datatype<2:
     data=dataset[1]
     print(data[0])
     corpus_information=EMdata.process_helical(dataset).extarct_helical()
-else:
+elif datatype==2:
     #read cryosparc
     dataset=np.load(file_path)
     corpus_information=EMdata.process_cryosparc_helical(dataset).extract_helical()
+elif datatype==3:
+    # read relion 5.0 using modern parser
+    file_info = EMdata.read_data_df(file_path)
+    dataframe = file_info.star2dataframe()
+    print("RELION 5.0 metadata columns:", list(dataframe.columns))
+    print("Sample data:", dataframe.head(1))
+    corpus_information = EMdata.process_helical_df(dataframe).extract_helical_select()
+else:
+    raise ValueError(f"Unsupported datatype: {datatype}. Supported values are 0-3.")
 corpus_dic=corpus_information[0]
 corpus=list(corpus_dic.values())
 

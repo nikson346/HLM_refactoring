@@ -17,10 +17,19 @@ def import_metafile(file_path, datatype):
         data = dataset[1]
         print(data[0])
         corpus_information = EMdata.process_helical(dataset).extarct_helical_select()
-    else:
+    elif datatype == 2:
         # read cryosparc
         dataset = np.load(file_path)
         corpus_information = EMdata.process_cryosparc_helical(dataset).extract_helical()
+    elif datatype == 3:
+        # read relion 5.0 using modern parser
+        file_info = EMdata.read_data_df(file_path)
+        dataframe = file_info.star2dataframe()
+        print("RELION 5.0 metadata columns:", list(dataframe.columns))
+        print("Sample data:", dataframe.head(1))
+        corpus_information = EMdata.process_helical_df(dataframe).extract_helical_select()
+    else:
+        raise ValueError(f"Unsupported datatype: {datatype}. Supported values are 0-3.")
     corpus_dic, helix_name = corpus_information
     corpus = list(corpus_dic.values())
     corpus_backup = corpus[:]

@@ -20,13 +20,15 @@ class read_data_df():
             optics.add_copied_block(star[0])
             del star[0]
             js = optics.as_json(True)  # True -> preserve case
-            optics = pd.read_json(js).T
+            import io
+            optics = pd.read_json(io.StringIO(js)).T
             d = {c.strip('_'): optics[c].values[0] for c in optics}
             optics = pd.DataFrame(d)
         else:
             optics = None
         js = star.as_json(True)  # True -> preserve case
-        data = pd.read_json(js).T
+        import io
+        data = pd.read_json(io.StringIO(js)).T
         d = {c.strip('_'): data[c].values[0] for c in data}
         data = pd.DataFrame(d)
         
@@ -129,7 +131,7 @@ class process_helical_df():
             lst=np.array(helicaldic[helicalnum[i]],dtype=dtype)
             helicaldic[helicalnum[i]]=np.sort(lst,order='place')
         print('finish converting')
-        for i in range(10):
+        for i in range(min(10, len(helicalnum))):
             print(helicaldic[helicalnum[i]])
         return helicaldic, filament_index
 
@@ -172,7 +174,7 @@ class process_helical():
                 else:
                     helicaldic[n] = [particle[C]]
         print('finish converting')
-        for i in range(10):
+        for i in range(min(10, len(helicalnum))):
             print(helicaldic[str(i)])
         return helicaldic, helicalnum
     def extarct_helical_select(self):
@@ -244,7 +246,7 @@ class process_cryosparc_helical():
                 count += 1
                 helicaldic[n] = [particle[-2]]
         print('finish converting')
-        for i in range(10):
+        for i in range(min(10, len(helicalnum))):
             print(helicaldic[str(i)])
         return helicaldic, helicalnum
     

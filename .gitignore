@@ -1,37 +1,44 @@
 
+# Test files
+test_*.py
+*_test.py
+
+# Temporary files  
+/tmp/
+*.tmp
+
+# Python cache
+*.pyc
+__pycache__/
+
+# IDE files
+.idea
+.vscode/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints
+
+# Model files
 *.0
 *.1
-*.3
 *.2
+*.3
+*.4
+*.5
+*.6
+*.7
 *.bin
 *.json
 *.pt
 *.pth
 *.txt
-*.pyc
-*.pyc
-*.pyc
-*.pyc
-__pycache__/EMdata.cpython-37.pyc
-*.pyc
-*.pyc
-.ipynb_checkpoints/Read_star-checkpoint.ipynb
-.ipynb_checkpoints/Read_Star-checkpoint.ipynb
-.ipynb_checkpoints/embedding-checkpoint.ipynb
-.ipynb_checkpoints/BERT_2Dclass_ignore-checkpoint.ipynb
-*.5
-*.4
-*.7
-*.6
-.ipynb_checkpoints/BERT_2Dclass_ignore-checkpoint.ipynb
-.ipynb_checkpoints/BERT_Npos-checkpoint.ipynb
-.ipynb_checkpoints/embedding-checkpoint.ipynb
-.ipynb_checkpoints/Read_Star-checkpoint.ipynb
-.ipynb_checkpoints/Read_star-checkpoint.ipynb
-__pycache__/EMdata.cpython-37.pyc
-notebook/.ipynb_checkpoints/BERT_Npos-checkpoint.ipynb
-.idea
-.ipynb_checkpoints
-Pipfile.lock
+
+# Build and distribution files
+build/
+dist/
+*.egg-info/
+
+# Environment files
 Pipfile
-__pycache__
+Pipfile.lock
+.env
